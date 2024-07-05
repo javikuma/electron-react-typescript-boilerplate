@@ -1,5 +1,5 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { app, BrowserWindow, ipcMain, shell } from 'electron'
+import { app, BrowserWindow, ipcMain, Menu, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 
@@ -11,6 +11,16 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
+    center: true,
+    title: 'Electron React Typescript Boilerplate',
+    // frame: false,
+    vibrancy: 'under-window',
+    visualEffectState: 'active',
+    maximizable: false, // Deshabilita la capacidad de maximizar
+    resizable: false, // Deshabilita la capacidad de redimensionar
+    minimizable: false, // Deshabilita la capacidad de minimizar
+    // titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 15, y: 10 },
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       //   sandbox: false
@@ -35,6 +45,18 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  // Crear un menú vacío o personalizado
+  const menu = Menu.buildFromTemplate([])
+  Menu.setApplicationMenu(menu)
+
+  // Esto ocultará el menú al iniciar la aplicación
+  mainWindow.setMenuBarVisibility(false)
+
+  // Esto evitará que el menú aparezca al presionar "Alt"
+  mainWindow.on('focus', () => {
+    mainWindow.setMenuBarVisibility(false)
+  })
 }
 
 // This method will be called when Electron has finished
